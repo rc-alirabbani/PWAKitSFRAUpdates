@@ -1,0 +1,27 @@
+node_modules# Ignore build folder
+build/
+
+# Ignore node_modules directory
+node_modules/
+
+# Ignore .env file
+.env
+
+# package lock json
+package-lock.json
+
+# translations
+overrides/app/static/translations/compiled
+
+#coverage folder
+coverage
+
+# static-content
+/overrides/app/static/*
+/.vscode
+
+
+/overrides/app/static/translations/compiled
+/translations/*.json
+
+/build/loadable-stats.json
