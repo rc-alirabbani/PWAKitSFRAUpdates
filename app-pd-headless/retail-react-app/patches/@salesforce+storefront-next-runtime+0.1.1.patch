@@ -1,0 +1,15 @@
+diff --git a/node_modules/@salesforce/storefront-next-runtime/dist/design-react.js b/node_modules/@salesforce/storefront-next-runtime/dist/design-react.js
+index 19427af..674d86f 100644
+--- a/node_modules/@salesforce/storefront-next-runtime/dist/design-react.js
++++ b/node_modules/@salesforce/storefront-next-runtime/dist/design-react.js
+@@ -78,8 +78,8 @@ function useNodeToTargetStore({ parentId, componentId, regionId, nodeRef, type,
+ //#region src/design/react/hooks/useComponentType.ts
+ function useComponentType(componentId) {
+ 	const { pageDesignerConfig } = useDesignContext();
+-	const { type = "" } = pageDesignerConfig?.components[componentId] ?? {};
+-	return pageDesignerConfig?.componentTypes[type] ?? null;
++	const { type = "" } = pageDesignerConfig?.components?.[componentId] ?? {};
++	return pageDesignerConfig?.componentTypes?.[type] ?? null;
+ }
+ 
+ //#endregion

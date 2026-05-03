@@ -11,7 +11,8 @@
     "overridesDir": "overrides"
   },
   "devDependencies": {
-    "@salesforce/retail-react-app": "9.1.1"
+    "@salesforce/retail-react-app": "9.1.1",
+    "patch-package": "^8.0.1"
   },
   "scripts": {
     "lint": "pwa-kit-dev lint \"**/*.{js,jsx}\"",
@@ -22,7 +23,7 @@
     "format": "pwa-kit-dev format \"**/*.{js,jsx}\"",
     "lint:fix": "npm run lint -- --fix",
     "tail-logs": "pwa-kit-dev tail-logs",
-    "postinstall": "npm run compile-translations && npm run compile-translations:pseudo",
+    "postinstall": "patch-package && npm run compile-translations && npm run compile-translations:pseudo",
     "analyze-build": "cross-env MOBIFY_ANALYZE=true npm run build",
     "start:inspect": "npm run start -- --inspect",
     "test:lighthouse": "cross-env NODE_ENV=production lhci autorun --config=tests/lighthouserc.js",

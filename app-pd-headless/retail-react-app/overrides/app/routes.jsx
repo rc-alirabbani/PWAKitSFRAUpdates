@@ -1,29 +1,42 @@
 /*
- * Copyright (c) 2023, salesforce.com, inc.
+ * Copyright (c) 2021, salesforce.com, inc.
  * All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+/* istanbul ignore file */
+
 import React from 'react'
 import loadable from '@loadable/component'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
-// Components
 import {Skeleton} from '@salesforce/retail-react-app/app/components/shared/ui'
 import {configureRoutes} from '@salesforce/retail-react-app/app/utils/routes-utils'
-import {routes as _routes} from '@salesforce/retail-react-app/app/routes'
-
-import PageDesignerPage from './pages/page-viewer'
+import {routes as templateRoutes} from '@salesforce/retail-react-app/app/routes'
 
 const fallback = <Skeleton height="75vh" width="100%" />
 
-// Create your pages here and add them to the routes array
-// Use loadable to split code into smaller js chunks
+// Local overrides
 const Home = loadable(() => import('./pages/home'), {fallback})
-const MyNewRoute = loadable(() => import('./pages/my-new-route'))
+const PageDesignerPage = loadable(() => import('./pages/page-viewer'), {fallback})
+const MyNewRoute = loadable(() => import('./pages/my-new-route'), {fallback})
 
-const routes = [
+// Used only for dynamic auth routes in default export (same as template app/routes.jsx)
+const Login = loadable(() => import('@salesforce/retail-react-app/app/pages/login'), {fallback})
+const ResetPassword = loadable(() => import('@salesforce/retail-react-app/app/pages/reset-password'), {
+    fallback
+})
+const SocialLoginRedirect = loadable(
+    () => import('@salesforce/retail-react-app/app/pages/social-login-redirect'),
+    {fallback}
+)
+const PageNotFound = loadable(() => import('@salesforce/retail-react-app/app/pages/page-not-found'))
+
+const templateRoutesWithoutHome = templateRoutes.filter((r) => !(r.path === '/' && r.exact))
+
+// Matches Storefront Page headless metadata: "route": "/page/:pageId"
+export const routes = [
     {
         path: '/page/:pageId',
         component: PageDesignerPage
@@ -35,14 +48,45 @@ const routes = [
     },
     {
         path: '/my-new-route',
-        component: MyNewRoute
+        component: MyNewRoute,
+        exact: true
     },
-    ..._routes
+    ...templateRoutesWithoutHome
 ]
 
 export default () => {
     const config = getConfig()
-    return configureRoutes(routes, config, {
-        ignoredRoutes: ['/callback', '*']
+    const loginConfig = config?.app?.login
+    const resetPasswordLandingPath = loginConfig?.resetPassword?.landingPath
+    const socialLoginEnabled = loginConfig?.social?.enabled
+    const socialRedirectURI = loginConfig?.social?.redirectURI
+    const passwordlessLoginEnabled = loginConfig?.passwordless?.enabled
+    const passwordlessLoginLandingPath = loginConfig?.passwordless?.landingPath
+
+    const dynamicRoutes = [
+        resetPasswordLandingPath && {
+            path: resetPasswordLandingPath,
+            component: ResetPassword,
+            exact: true
+        },
+        passwordlessLoginEnabled &&
+            passwordlessLoginLandingPath && {
+                path: passwordlessLoginLandingPath,
+                component: Login,
+                exact: true
+            },
+        socialLoginEnabled &&
+            socialRedirectURI && {
+                path: socialRedirectURI,
+                component: SocialLoginRedirect,
+                exact: true
+            }
+    ].filter(Boolean)
+
+    const allRoutes = configureRoutes([...routes, ...dynamicRoutes], config, {
+        ignoredRoutes: ['/callback'],
+        fuzzyPathMatching: true
     })
+
+    return [...allRoutes, {path: '*', component: PageNotFound}]
 }
