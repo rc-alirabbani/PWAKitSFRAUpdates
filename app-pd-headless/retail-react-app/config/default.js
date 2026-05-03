@@ -5,8 +5,23 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 /* eslint-disable @typescript-eslint/no-var-requires */
+if (typeof window === 'undefined') {
+    require('dotenv').config()
+}
+
 const sites = require('./sites.js')
 const {parseSettings, validateOtpTokenLength} = require('./utils.js')
+
+// Commerce / proxy — from .env (see PWA_KIT_SLAS_* and SCAPI_URL / OCAPI_URL). Fallbacks match prior hardcoded values.
+const slasClientId = process.env.PWA_KIT_SLAS_CLIENT_ID
+const slasOrgId = process.env.PWA_KIT_SLAS_ORG_ID
+const slasShortCode = process.env.PWA_KIT_SLAS_SHORT_CODE
+const slasSiteId = process.env.PWA_KIT_SLAS_SITE_ID
+
+const scapiProxyHost =
+    process.env.SCAPI_URL ||
+    (slasShortCode ? `${slasShortCode}.api.commercecloud.salesforce.com` : undefined)
+const ocapiProxyHost = process.env.OCAPI_URL
 
 module.exports = {
     app: {
@@ -87,7 +102,7 @@ module.exports = {
             }
         },
         // The default site for your app. This value will be used when a siteRef could not be determined from the url
-        defaultSite: 'PWAKitSFRAUpdates',
+        defaultSite: slasSiteId || 'PWAKitSFRAUpdates',
         // Provide aliases for your sites. These will be used in place of your site id when generating paths throughout the application.
         // siteAliases: {
         //    RefArch: 'us',
@@ -99,10 +114,10 @@ module.exports = {
         commerceAPI: {
             proxyPath: '/mobify/proxy/api',
             parameters: {
-                clientId: '6b481c1b-7c7b-4926-9f63-80b0fa331af5',
-                organizationId: 'f_ecom_zzkc_006',
-                shortCode: 'kv7kzm78',
-                siteId: 'PWAKitSFRAUpdates'
+                clientId: slasClientId || '6b481c1b-7c7b-4926-9f63-80b0fa331af5',
+                organizationId: slasOrgId || 'f_ecom_zzkc_006',
+                shortCode: slasShortCode || 'kv7kzm78',
+                siteId: slasSiteId || 'PWAKitSFRAUpdates'
             }
         },
         // Einstein api config
@@ -174,11 +189,11 @@ module.exports = {
         ssrFunctionNodeVersion: '24.x',
         proxyConfigs: [
             {
-                host: 'kv7kzm78.api.commercecloud.salesforce.com',
+                host: scapiProxyHost || 'kv7kzm78.api.commercecloud.salesforce.com',
                 path: 'api'
             },
             {
-                host: 'zzkc-006.dx.commercecloud.salesforce.com',
+                host: ocapiProxyHost || 'zzkc-006.dx.commercecloud.salesforce.com',
                 path: 'ocapi'
             }
         ]

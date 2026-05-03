@@ -346,6 +346,16 @@ const {handler} = runtime.createHandler(options, (app) => {
     const contentSecurityPolicy = {
         useDefaults: true,
         directives: {
+            // BM Page Designer embeds the composable storefront in an iframe. Default PWA Kit CSP only
+            // allows runtime.commercecloud.com; add Commerce Cloud / BM hosts so the preview can load.
+            'frame-ancestors': [
+                "'self'",
+                'https://*.commercecloud.salesforce.com',
+                'https://*.dx.commercecloud.salesforce.com',
+                'https://*.demandware.net',
+                'https://*.secure.force.com',
+                'https://bcs.secure.force.com'
+            ],
             'img-src': [
                 // Default source for product images - replace with your CDN
                 '*.commercecloud.salesforce.com',
@@ -412,6 +422,11 @@ const {handler} = runtime.createHandler(options, (app) => {
             contentSecurityPolicy
         })
     )
+
+    app.use((req, res, next) => {
+        res.removeHeader('X-Frame-Options')
+        next()
+    })
 
     // Handle the redirect from SLAS as to avoid error
     app.get('/callback', (req, res) => {

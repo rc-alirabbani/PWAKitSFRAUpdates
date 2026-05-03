@@ -35,8 +35,15 @@ const PageNotFound = loadable(() => import('@salesforce/retail-react-app/app/pag
 
 const templateRoutesWithoutHome = templateRoutes.filter((r) => !(r.path === '/' && r.exact))
 
-// Matches Storefront Page headless metadata: "route": "/page/:pageId"
+// Page Designer preview: BM appends pageId (and mode, pdToken) as query params. Use static
+// "/page" in experience metadata so BM does not request the literal path "/page/:pageId".
+// "/page/:pageId" remains for direct storefront links.
 export const routes = [
+    {
+        path: '/page',
+        component: PageDesignerPage,
+        exact: true
+    },
     {
         path: '/page/:pageId',
         component: PageDesignerPage
