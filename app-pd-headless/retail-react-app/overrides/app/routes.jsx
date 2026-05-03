@@ -14,6 +14,8 @@ import {Skeleton} from '@salesforce/retail-react-app/app/components/shared/ui'
 import {configureRoutes} from '@salesforce/retail-react-app/app/utils/routes-utils'
 import {routes as _routes} from '@salesforce/retail-react-app/app/routes'
 
+import PageDesignerPage from './pages/page-viewer'
+
 const fallback = <Skeleton height="75vh" width="100%" />
 
 // Create your pages here and add them to the routes array
@@ -22,6 +24,10 @@ const Home = loadable(() => import('./pages/home'), {fallback})
 const MyNewRoute = loadable(() => import('./pages/my-new-route'))
 
 const routes = [
+    {
+        path: '/page/:pageId',
+        component: PageDesignerPage
+    },
     {
         path: '/',
         component: Home,
