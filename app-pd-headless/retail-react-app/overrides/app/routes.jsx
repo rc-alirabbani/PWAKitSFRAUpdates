@@ -45,7 +45,7 @@ export const routes = [
         exact: true
     },
     {
-        path: '/page/test',
+        path: '/page/:pageId',
         component: PageDesignerPage
     },
     {
