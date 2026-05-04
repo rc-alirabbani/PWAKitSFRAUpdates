@@ -1,5 +1,6 @@
 // app/pages/page-viewer/index.jsx
-import React, {useEffect, useMemo, useState} from 'react'
+import React, {Suspense, useEffect, useMemo, useState} from 'react'
+import loadable from '@loadable/component'
 import {useParams, useLocation} from 'react-router-dom'
 import {useQuery} from '@tanstack/react-query'
 import {
@@ -16,8 +17,18 @@ import {
     useCommerceApi,
     useConfig
 } from '@salesforce/commerce-sdk-react'
-import {Page} from '@salesforce/commerce-sdk-react/page-designer'
 import {HTTPError, HTTPNotFound} from '@salesforce/pwa-kit-react-sdk/ssr/universal/errors'
+
+import {preloadPageDesignerChunks} from '../../page-designer/registry'
+
+/** Lazy-load PD tree when this route renders (separate chunk from main storefront). */
+const PageDesignerTree = loadable(
+    () => import('@salesforce/commerce-sdk-react/page-designer'),
+    {
+        resolveComponent: (mod) => mod.Page,
+        fallback: <Skeleton height="40vh" width="100%" />
+    }
+)
 
 const LOG = '[page-viewer]'
 
@@ -142,6 +153,16 @@ const PageViewer = () => {
             }
 
             const json = await response.json()
+
+            // Warm lazy PD chunks before first paint of <Page /> (client only; reduces iframe waterfall).
+            if (typeof window !== 'undefined') {
+                try {
+                    await preloadPageDesignerChunks(json)
+                } catch {
+                    /* best-effort */
+                }
+            }
+
             if (typeof window !== 'undefined' && isPageDesignerContext) {
                 // eslint-disable-next-line no-console
                 console.info(LOG, 'getPage OK', {pageId, regionCount: json?.regions?.length})
@@ -228,7 +249,9 @@ const PageViewer = () => {
 
     return (
         <Box layerStyle={'page'}>
-            <Page page={page} />
+            <Suspense fallback={<Skeleton height="40vh" width="100%" />}>
+                <PageDesignerTree page={page} />
+            </Suspense>
         </Box>
     )
 }
