@@ -19,8 +19,6 @@ import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
 
 const config = getConfig()
 
-require('dotenv').config()
-
 const options = {
     // The build directory (an absolute path)
     buildDir: path.resolve(process.cwd(), 'build'),
