@@ -90,10 +90,18 @@ import {flatten, isServer, watchOnlineStatus} from '@salesforce/retail-react-app
 
 import Seo from '@salesforce/retail-react-app/app/components/seo'
 import ShopperAgent from '@salesforce/retail-react-app/app/components/shopper-agent'
-import {initializeRegistry} from '../../page-designer/registry'
 
-// Initialize registry synchronously at module load time so components are available during SSR
-initializeRegistry()
+import {initializeRegistry as initializeHeadlessPageDesignerRegistry} from '../../page-designer/registry'
+
+// Headless registry adds commerce_assets.imageTile, editorialRichText, carousel, etc. The base
+// retail-react-app registry (initialized from App) does not include those typeIds. This module loads
+// right after App in the PWA Kit entry, so importers registered here override/extend the base set.
+initializeHeadlessPageDesignerRegistry()
+
+// import {initializeRegistry} from '../../page-designer/registry'
+
+// // Initialize registry synchronously at module load time so components are available during SSR
+// initializeRegistry()
 import {getCommerceAgentConfig} from '@salesforce/retail-react-app/app/utils/config-utils'
 import {getPathWithLocale} from '@salesforce/retail-react-app/app/utils/url'
 import {useShopperAgent} from '@salesforce/retail-react-app/app/hooks/use-shopper-agent'
