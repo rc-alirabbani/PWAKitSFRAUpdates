@@ -44,7 +44,7 @@ import {
     STORE_LOCATOR_SUPPORTED_COUNTRIES
 } from '@salesforce/retail-react-app/app/constants'
 
-import {initializeRegistry as initializeHeadlessPageDesignerRegistry} from '../../page-designer/registry'
+// import {initializeRegistry as initializeHeadlessPageDesignerRegistry} from '../../page-designer/registry'
 
 // Headless registry adds commerce_assets.imageTile, editorialRichText, carousel, etc. The base
 // retail-react-app registry (initialized from App) does not include those typeIds. This module loads

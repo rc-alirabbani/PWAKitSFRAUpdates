@@ -21,8 +21,6 @@ import {HTTPError, HTTPNotFound} from '@salesforce/pwa-kit-react-sdk/ssr/univers
 
 import {preloadPageDesignerChunks} from '../../page-designer/registry'
 
-initializeRegistry();
-
 const LOG = '[page-viewer]'
 
 function redactSearchString(search) {
