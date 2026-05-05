@@ -1,6 +1,5 @@
 // app/pages/page-viewer/index.jsx
 import React, {Suspense, useEffect, useMemo, useState} from 'react'
-import loadable from '@loadable/component'
 import {useParams, useLocation} from 'react-router-dom'
 import {useQuery} from '@tanstack/react-query'
 import {
@@ -17,18 +16,12 @@ import {
     useCommerceApi,
     useConfig
 } from '@salesforce/commerce-sdk-react'
+import {Page} from '@salesforce/commerce-sdk-react/page-designer'
 import {HTTPError, HTTPNotFound} from '@salesforce/pwa-kit-react-sdk/ssr/universal/errors'
 
 import {preloadPageDesignerChunks} from '../../page-designer/registry'
 
-/** Lazy-load PD tree when this route renders (separate chunk from main storefront). */
-const PageDesignerTree = loadable(
-    () => import('@salesforce/commerce-sdk-react/page-designer'),
-    {
-        resolveComponent: (mod) => mod.Page,
-        fallback: <Skeleton height="40vh" width="100%" />
-    }
-)
+initializeRegistry();
 
 const LOG = '[page-viewer]'
 
@@ -228,7 +221,10 @@ const PageViewer = () => {
 
     if (isLoading || page == null) {
         return (
-            <Box layerStyle={'page'} p={4}>
+            <Box layerStyle={'page'} p={4} minHeight="50vh">
+                <Text fontSize="sm" color="gray.600" mb={3}>
+                    Loading Page Designer content…
+                </Text>
                 <Skeleton height="40vh" width="100%" />
                 {showSlowHint && isPageDesignerContext ? (
                     <Alert status="warning" mt={4}>
@@ -249,8 +245,17 @@ const PageViewer = () => {
 
     return (
         <Box layerStyle={'page'}>
-            <Suspense fallback={<Skeleton height="40vh" width="100%" />}>
-                <PageDesignerTree page={page} />
+            <Suspense
+                fallback={
+                    <Box p={4} minHeight="40vh">
+                        <Text fontSize="sm" color="gray.600" mb={3}>
+                            Rendering page layout…
+                        </Text>
+                        <Skeleton height="40vh" width="100%" />
+                    </Box>
+                }
+            >
+                <Page page={page} />
             </Suspense>
         </Box>
     )
