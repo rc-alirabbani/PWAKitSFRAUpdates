@@ -19,7 +19,7 @@ import {
 import {Page} from '@salesforce/commerce-sdk-react/page-designer'
 import {HTTPError, HTTPNotFound} from '@salesforce/pwa-kit-react-sdk/ssr/universal/errors'
 
-import {preloadPageDesignerChunks} from '../../page-designer/registry'
+// import {preloadPageDesignerChunks} from '../../page-designer/registry'
 
 const LOG = '[page-viewer]'
 
@@ -145,14 +145,14 @@ const PageViewer = () => {
 
             const json = await response.json()
 
-            // Warm lazy PD chunks before first paint of <Page /> (client only; reduces iframe waterfall).
-            if (typeof window !== 'undefined') {
-                try {
-                    await preloadPageDesignerChunks(json)
-                } catch {
-                    /* best-effort */
-                }
-            }
+            // // Warm lazy PD chunks before first paint of <Page /> (client only; reduces iframe waterfall).
+            // if (typeof window !== 'undefined') {
+            //     try {
+            //         await preloadPageDesignerChunks(json)
+            //     } catch {
+            //         /* best-effort */
+            //     }
+            // }
 
             if (typeof window !== 'undefined' && isPageDesignerContext) {
                 // eslint-disable-next-line no-console
