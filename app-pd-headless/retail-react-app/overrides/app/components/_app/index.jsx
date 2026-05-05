@@ -484,7 +484,7 @@ const App = (props) => {
                                             <OfflineBoundary isOnline={false}>
                                                 <PageDesignerProvider
                                                     clientId="6b481c1b-7c7b-4926-9f63-80b0fa331af5"
-                                                    targetOrigin="zzkc-006.dx.commercecloud.salesforce.com"
+                                                    targetOrigin="https://zzkc-006.dx.commercecloud.salesforce.com"
                                                     usid={usid}
                                                     mode={pageDesignerMode}
                                                 >
