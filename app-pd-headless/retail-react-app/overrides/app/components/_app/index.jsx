@@ -468,7 +468,7 @@ const App = (props) => {
                                         >
                                             <OfflineBoundary isOnline={false}>
                                                 <PageDesignerProvider
-                                                    clientId="pwa-kit-client"
+                                                    clientId="6b481c1b-7c7b-4926-9f63-80b0fa331af5"
                                                     targetOrigin="*"
                                                     usid={usid}
                                                     mode={pageDesignerMode}
