@@ -91,17 +91,24 @@ import {flatten, isServer, watchOnlineStatus} from '@salesforce/retail-react-app
 import Seo from '@salesforce/retail-react-app/app/components/seo'
 import ShopperAgent from '@salesforce/retail-react-app/app/components/shopper-agent'
 
-import {initializeRegistry as initializeHeadlessPageDesignerRegistry} from '../../page-designer/registry'
+// import {initializeRegistry as initializeHeadlessPageDesignerRegistry} from '../../page-designer/registry'
 
 // Headless registry adds commerce_assets.imageTile, editorialRichText, carousel, etc. The base
 // retail-react-app registry (initialized from App) does not include those typeIds. This module loads
 // right after App in the PWA Kit entry, so importers registered here override/extend the base set.
-initializeHeadlessPageDesignerRegistry()
+// initializeHeadlessPageDesignerRegistry()
 
 // import {initializeRegistry} from '../../page-designer/registry'
 
 // // Initialize registry synchronously at module load time so components are available during SSR
 // initializeRegistry()
+
+
+import {initializeRegistry} from '@salesforce/retail-react-app/app/page-designer/registry'
+ 
+// Initialize registry synchronously at module load time so components are available during SSR
+initializeRegistry()
+
 import {getCommerceAgentConfig} from '@salesforce/retail-react-app/app/utils/config-utils'
 import {getPathWithLocale} from '@salesforce/retail-react-app/app/utils/url'
 import {useShopperAgent} from '@salesforce/retail-react-app/app/hooks/use-shopper-agent'
@@ -476,8 +483,8 @@ const App = (props) => {
                                         >
                                             <OfflineBoundary isOnline={false}>
                                                 <PageDesignerProvider
-                                                    clientId="pwa-kit-client"
-                                                    targetOrigin="*"
+                                                    clientId="6b481c1b-7c7b-4926-9f63-80b0fa331af5"
+                                                    targetOrigin="zzkc-006.dx.commercecloud.salesforce.com"
                                                     usid={usid}
                                                     mode={pageDesignerMode}
                                                 >

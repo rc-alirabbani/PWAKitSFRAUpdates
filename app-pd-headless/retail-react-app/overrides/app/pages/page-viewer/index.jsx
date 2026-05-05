@@ -244,14 +244,14 @@ const PageViewer = () => {
     return (
         <Box layerStyle={'page'}>
             <Suspense
-                fallback={
-                    <Box p={4} minHeight="40vh">
-                        <Text fontSize="sm" color="gray.600" mb={3}>
-                            Rendering page layout…
-                        </Text>
-                        <Skeleton height="40vh" width="100%" />
-                    </Box>
-                }
+                // fallback={
+                //     <Box p={4} minHeight="40vh">
+                //         <Text fontSize="sm" color="gray.600" mb={3}>
+                //             Rendering page layout…
+                //         </Text>
+                //         <Skeleton height="40vh" width="100%" />
+                //     </Box>
+                // }
             >
                 <Page page={page} />
             </Suspense>
