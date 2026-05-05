@@ -46,8 +46,6 @@ import {
 
 import {initializeRegistry as initializeHeadlessPageDesignerRegistry} from '../../page-designer/registry'
 
-initializeRegistry();
-
 // Headless registry adds commerce_assets.imageTile, editorialRichText, carousel, etc. The base
 // retail-react-app registry (initialized from App) does not include those typeIds. This module loads
 // right after App in the PWA Kit entry, so importers registered here override/extend the base set.
