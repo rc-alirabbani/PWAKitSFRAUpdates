@@ -23,9 +23,13 @@ export function initializeRegistry() {
     registry.registerImporter('commerce_assets.imageTile', () => import('./assets/image-tile'))
     registry.registerImporter('commerce_assets.photoTile', () => import('./assets/image-tile'))
 
-    registry.registerImporter('commerce_assets.editorialRichText', () =>
-        import('./assets/editorial-rich-text')
-    )
+    // BM typeId follows `{group}.{filenameWithoutJson}` — casing must match the API (see getPage JSON).
+    // e.g. EditorialRichText.json → commerce_assets.EditorialRichText (not always lowercase).
+    const editorialImporter = () => import('./assets/editorial-rich-text')
+    registry.registerImporter('commerce_assets.editorialRichText', editorialImporter)
+    registry.registerImporter('commerce_assets.EditorialRichText', editorialImporter)
+    registry.registerImporter('commerce_assets.textbox', editorialImporter)
+    registry.registerImporter('commerce_assets.Textbox', editorialImporter)
 
     registry.registerImporter('commerce_layouts.mobileGrid1r1c', () =>
         import('./layouts/mobileGrid1r1c')
@@ -47,6 +51,13 @@ export function initializeRegistry() {
     )
     registry.registerImporter('commerce_layouts.mobileGrid3r2c1', () =>
         import('./layouts/mobileGrid3r2c1')
+    )
+
+    registry.registerImporter('commerce_layouts.mobileGridLookBook', () =>
+        import('./layouts/mobileGridLookBook')
+    )
+    registry.registerImporter('commerce_layouts.popularCategories', () =>
+        import('./layouts/popularCategories')
     )
 
     registry.registerImporter('commerce_layouts.carousel', () => import('./layouts/carousel'))
