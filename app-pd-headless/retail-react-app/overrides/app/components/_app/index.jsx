@@ -98,16 +98,16 @@ import ShopperAgent from '@salesforce/retail-react-app/app/components/shopper-ag
 // right after App in the PWA Kit entry, so importers registered here override/extend the base set.
 // initializeHeadlessPageDesignerRegistry()
 
-// import {initializeRegistry} from '../../page-designer/registry'
+import {initializeRegistry} from '../../page-designer/registry'
 
 // // Initialize registry synchronously at module load time so components are available during SSR
-// initializeRegistry()
+initializeRegistry()
 
 
-import {initializeRegistry} from '@salesforce/retail-react-app/app/page-designer/registry'
+// import {initializeRegistry} from '@salesforce/retail-react-app/app/page-designer/registry'
  
 // Initialize registry synchronously at module load time so components are available during SSR
-initializeRegistry()
+// initializeRegistry()
 
 import {getCommerceAgentConfig} from '@salesforce/retail-react-app/app/utils/config-utils'
 import {getPathWithLocale} from '@salesforce/retail-react-app/app/utils/url'
@@ -485,6 +485,8 @@ const App = (props) => {
                                                 <PageDesignerProvider
                                                     clientId="6b481c1b-7c7b-4926-9f63-80b0fa331af5"
                                                     targetOrigin="https://zzkc-006.dx.commercecloud.salesforce.com"
+                                                    // clientId="pwa-kit-client"
+                                                    // targetOrigin="*"
                                                     usid={usid}
                                                     mode={pageDesignerMode}
                                                 >
