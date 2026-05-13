@@ -16,12 +16,91 @@ import {
     useCommerceApi,
     useConfig
 } from '@salesforce/commerce-sdk-react'
-import {Page} from '@salesforce/commerce-sdk-react/page-designer'
+import {Page, registry} from '@salesforce/commerce-sdk-react/page-designer'
 import {HTTPError, HTTPNotFound} from '@salesforce/pwa-kit-react-sdk/ssr/universal/errors'
 
 // import {preloadPageDesignerChunks} from '../../page-designer/registry'
 
 const LOG = '[page-viewer]'
+
+/** Summarize PD payload for Console when Network JSON is hard to inspect (e.g. minified). */
+function summarizePageDesignerPayload(page) {
+    if (!page) return {page: null}
+    const regions = page.regions ?? []
+    return {
+        pageId: page.id,
+        pageTypeId: page.typeId,
+        regionCount: regions.length,
+        regions: regions.map((r) => ({
+            id: r?.id,
+            componentCount: r?.components?.length ?? 0,
+            typeIds: (r?.components ?? []).map((c) => c?.typeId).filter(Boolean)
+        }))
+    }
+}
+
+/** Walk nested Page Designer components and collect every `typeId`. */
+function walkComponentTypeIds(component, into) {
+    if (!component) return
+    if (component.typeId) into.add(component.typeId)
+    for (const region of component.regions ?? []) {
+        for (const child of region.components ?? []) {
+            walkComponentTypeIds(child, into)
+        }
+    }
+}
+
+/** All component `typeId`s from a Shopper Experience getPage payload (page + nested regions). */
+function collectAllTypeIdsFromPage(page) {
+    const into = new Set()
+    for (const region of page?.regions ?? []) {
+        for (const comp of region.components ?? []) {
+            walkComponentTypeIds(comp, into)
+        }
+    }
+    return [...into]
+}
+
+/**
+ * Log every typeId from the payload and console.error any id that cannot be loaded
+ * (no `registry.registerImporter` or broken import). Runs before `<Page />` renders this payload.
+ */
+async function logPageDesignerTypeIdRegistryCoverage(page, {isPageDesignerContext, pageId, siteId}) {
+    if (typeof window === 'undefined') return
+
+    const typeIds = collectAllTypeIdsFromPage(page).sort()
+    if (typeIds.length === 0) return
+
+    const logAndVerify =
+        isPageDesignerContext || process.env.NODE_ENV === 'development'
+
+    if (logAndVerify) {
+        // eslint-disable-next-line no-console
+        console.info(LOG, 'typeId list from getPage (nested components):', typeIds)
+    }
+
+    if (!logAndVerify) return
+
+    const missing = []
+    for (const id of typeIds) {
+        try {
+            await registry.preload(id)
+        } catch {
+            missing.push(id)
+        }
+    }
+
+    if (missing.length > 0) {
+        // eslint-disable-next-line no-console
+        console.error(
+            LOG,
+            'Page Designer will not render these typeId(s) — add registry.registerImporter() or fix the import:',
+            missing,
+            '\nFile: overrides/app/page-designer/registry.js (string must match API exactly).',
+            {pageId, siteId, isPageDesignerContext}
+        )
+    }
+}
 
 function redactSearchString(search) {
     if (!search) return ''
@@ -145,6 +224,8 @@ const PageViewer = () => {
 
             const json = await response.json()
 
+            await logPageDesignerTypeIdRegistryCoverage(json, {isPageDesignerContext, pageId, siteId})
+
             // // Warm lazy PD chunks before first paint of <Page /> (client only; reduces iframe waterfall).
             // if (typeof window !== 'undefined') {
             //     try {
@@ -155,8 +236,21 @@ const PageViewer = () => {
             // }
 
             if (typeof window !== 'undefined' && isPageDesignerContext) {
+                const summary = summarizePageDesignerPayload(json)
                 // eslint-disable-next-line no-console
-                console.info(LOG, 'getPage OK', {pageId, regionCount: json?.regions?.length})
+                console.info(LOG, 'getPage OK', {pageId, ...summary})
+                const totalComponents = summary.regions?.reduce(
+                    (n, r) => n + (r.componentCount || 0),
+                    0
+                )
+                if (summary.regionCount === 0 || totalComponents === 0) {
+                    // eslint-disable-next-line no-console
+                    console.warn(
+                        LOG,
+                        'getPage returned no regions or no components — BM preview will look empty regardless of registry. Check page is published/scheduled, correct site, and pageId.',
+                        {pageId, siteId}
+                    )
+                }
             }
             return json
         }

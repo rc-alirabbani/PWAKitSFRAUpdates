@@ -18,7 +18,6 @@ import {
     useShopperBasketsMutation,
     useUsid
 } from '@salesforce/commerce-sdk-react'
-import {useServerContext} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {useAppOrigin} from '@salesforce/retail-react-app/app/hooks/use-app-origin'
 import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
@@ -175,19 +174,18 @@ const App = (props) => {
         onClose: onCloseStoreLocator
     } = useStoreLocatorModal()
     const storeLocatorEnabled = getConfig()?.app?.storeLocatorEnabled ?? STORE_LOCATOR_IS_ENABLED
-    const {req} = useServerContext()
-
     const [isOnline, setIsOnline] = useState(true)
     const styles = useStyleConfig('App')
     const {isOpen, onOpen, onClose} = useDisclosure()
 
-    // Determine Page Designer mode from URL - use req for server-side detection
+    // Page Designer iframe always includes ?mode=EDIT|PREVIEW on the storefront URL.
+    // Must depend on location.search (not req?.url) or mode stays undefined after client hydrate/navigation.
     const pageDesignerMode = useMemo(() => {
         const queryParams = location?.search || ''
         if (queryParams.includes('mode=EDIT')) return 'EDIT'
-        else if (queryParams.includes('mode=PREVIEW')) return 'PREVIEW'
+        if (queryParams.includes('mode=PREVIEW')) return 'PREVIEW'
         return undefined
-    }, [req?.url])
+    }, [location.search])
 
     const targetLocale = getTargetLocale({
         getUserPreferredLocales: () => {
