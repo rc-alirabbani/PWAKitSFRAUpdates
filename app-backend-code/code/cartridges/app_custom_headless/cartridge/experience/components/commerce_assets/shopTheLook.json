@@ -20,6 +20,7 @@
                     "name": "Display pricing for product",
                     "description": "Do you want to Display Pricing for product (Set product is not applicable here)?",
                     "type": "boolean",
+                    "default_value": false,
                     "required": true
                 }
             ]

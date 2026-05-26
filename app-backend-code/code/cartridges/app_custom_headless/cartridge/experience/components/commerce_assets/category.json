@@ -12,6 +12,7 @@
                     "id": "textHeadline",
                     "name": "Heading",
                     "type": "markup",
+                    "default_value": "<p></p>",
                     "required": true
                 }
             ]

@@ -5,9 +5,9 @@
         {
             "id": "categoryId",
             "name": "Category",
-            "description": "The category to show the product list page for.",
+            "description": "Optional in BM: headless PLP resolves category from the route and page dynamic_lookup.",
             "type": "category",
-            "required": true
+            "required": false
         }
     ],
     "supported_object_types": [

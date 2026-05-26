@@ -49,6 +49,7 @@
                     "name": "Display product ratings.",
                     "description": "Specify whether or not to display ratings in product tile.",
                     "type": "boolean",
+                    "default_value": false,
                     "required": true
                 }
             ]
@@ -74,11 +75,8 @@
                     "id": "xsCarouselSlidesToDisplay",
                     "name": "Number of slides to display on phones",
                     "type": "enum",
-                    "values": [
-                        1,
-                        2,
-                        3
-                    ],
+                    "values": [1, 2, 3],
+                    "default_value": 1,
                     "required": true
                 }
             ]
@@ -111,7 +109,8 @@
                         4,
                         6
                     ],
-                    "required": true
+                    "required": true,
+                    "default_value": 1
                 }
             ]
         },
@@ -137,7 +136,8 @@
                         4,
                         6
                     ],
-                    "required": true
+                    "required": true,
+                    "default_value": 1
                 }
             ]
         }

@@ -13,6 +13,7 @@
                     "name": "content",
                     "description": "This is the rich text content area",
                     "type": "markup",
+                    "default_value": "<p></p>",
                     "required": true
                 }
             ]

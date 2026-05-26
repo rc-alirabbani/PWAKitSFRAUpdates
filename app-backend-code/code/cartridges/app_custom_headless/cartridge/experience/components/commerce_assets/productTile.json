@@ -20,6 +20,7 @@
                     "name": "Display product ratings",
                     "description": "Specify whether or not to display ratings in product tile.",
                     "type": "boolean",
+                    "default_value": false,
                     "required": true
                 }
             ]
