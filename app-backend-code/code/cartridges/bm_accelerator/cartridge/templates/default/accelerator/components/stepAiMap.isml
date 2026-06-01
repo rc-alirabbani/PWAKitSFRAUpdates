@@ -7,7 +7,7 @@
         <thead>
             <tr>
                 <th>Source field</th>
-                <th>Target (B2B Commerce)</th>
+                <th>Target (B2C Commerce)</th>
                 <th>AI confidence</th>
             </tr>
         </thead>
