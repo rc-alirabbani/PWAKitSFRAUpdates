@@ -5,9 +5,9 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 /* eslint-disable @typescript-eslint/no-var-requires */
-if (typeof window === 'undefined') {
-    require('dotenv').config()
-}
+// if (typeof window === 'undefined') {
+//     require('dotenv').config()
+// }
 
 const sites = require('./sites.js')
 const {parseSettings, validateOtpTokenLength} = require('./utils.js')
