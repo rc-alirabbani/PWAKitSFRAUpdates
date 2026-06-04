@@ -60,6 +60,7 @@
     "last 4 ChromeAndroid versions"
   ],
   "dependencies": {
+    "@salesforce/pwa-kit-dev": "^3.19.0-nightly-20260602092158",
     "dotenv": "^17.4.2"
   }
 }
