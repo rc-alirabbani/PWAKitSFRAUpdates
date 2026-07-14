@@ -1,0 +1,496 @@
+@use 'variables' as *;
+
+// Prevent horizontal scrollbar from full-bleed / vw quirks (site stays viewport-wide)
+html {
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+#app {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+// --- Global accents (Chakra-friendly hooks) ---
+.rc-theme-hook {
+  --rc-brand-blue: #{$rc-blue};
+  --rc-brand-orange: #{$rc-orange};
+  --rc-brand-gray-bg: #{$rc-gray-100};
+  color: $rc-gray-900;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+
+  /*
+   * Mobile / tablet header logo (<992px, hamburger layout).
+   * Override on .rc-theme-hook in your own SCSS or inline style hook if needed.
+   */
+  --rc-logo-img-height-mobile: 40px;
+  --rc-logo-img-max-width-mobile: 220px;
+  --rc-logo-btn-min-height-mobile: 44px;
+  --rc-logo-btn-padding-x-mobile: 0.35rem;
+}
+
+// Header logo: larger “full” lockup below 1200px; compact bar from 1200px+
+.rc-header-logo-img {
+  width: auto;
+  object-fit: contain;
+  object-position: left center;
+
+  @media (max-width: 1199.98px) {
+    height: auto;
+    max-height: 52px;
+    max-width: min(340px, 88vw);
+    min-width: 0;
+  }
+
+  @media (min-width: 1200px) {
+    height: clamp(30.2px, 1.35vw + 19.4px, 49.7px);
+    max-width: clamp(95px, 10.8vw + 39px, 227px);
+    min-width: 78px;
+  }
+}
+
+.rc-header-logo-btn {
+  flex-shrink: 0;
+
+  @media (max-width: 1199.98px) {
+    min-height: var(--rc-logo-btn-min-height-mobile);
+    padding-inline: var(--rc-logo-btn-padding-x-mobile);
+    height: auto !important;
+  }
+
+  @media (min-width: 1200px) {
+    height: auto !important;
+    min-height: clamp(36px, 1vw + 28px, 52px) !important;
+    width: auto !important;
+    padding-inline: clamp(0.15rem, 0.4vw, 0.65rem) !important;
+  }
+}
+
+// Desktop main nav: single line; type scales slightly with viewport
+@media (min-width: 992px) {
+  #list-menu {
+    flex: 1 1 auto;
+    min-width: 0;
+
+    .chakra-stack {
+      flex-wrap: nowrap !important;
+      align-items: center;
+      column-gap: 0;
+      min-width: 0;
+
+      > div {
+        width: calc(100% - 100px);
+      }
+    }
+
+    a[name$=' __'] {
+      font-size: 14px !important;
+      margin-left: 0.2rem !important;
+      margin-right: 0.12rem !important;
+      padding: 0.35rem 0.22rem !important;
+      white-space: nowrap !important;
+      line-height: 1.2 !important;
+
+      + a[id^='popover-trigger-'] {
+        margin-top: 10px !important;
+        margin-right: 0 !important;
+      }
+    }
+  }
+}
+
+// Category mega-menu (desktop ListMenu popover) — SCSS-only tweaks; markup unchanged.
+// Fixes large blank band on the left (template margin + narrow %) and evens column gutters.
+[data-testid='popover-menu'] {
+  .chakra-popover__body {
+    padding-inline: 1rem !important;
+
+    @media (min-width: 992px) {
+      padding-inline: 1.25rem !important;
+    }
+
+    > div {
+      margin-inline-start: 0 !important;
+      margin-inline-end: 0 !important;
+      margin-left: 0 !important;
+      width: 100%;
+      max-width: 100%;
+      align-items: flex-start !important;
+    }
+  }
+
+  // Retail template applies large margin-inline-start on the grid (lg/xl).
+  .chakra-popover__body [style*='68px'],
+  .chakra-popover__body [style*='96px'],
+  .chakra-popover__body [style*='margin-inline-start'] {
+    margin-inline-start: 0 !important;
+    margin-left: 0 !important;
+  }
+
+  // SimpleGrid uses inline grid-template + gap; rebalance columns and gutters.
+  .chakra-popover__body [style*='grid-template-columns'] {
+    width: 100% !important;
+    margin-inline-start: 0 !important;
+    justify-content: start !important;
+    align-content: start !important;
+    column-gap: 1.5rem !important;
+    row-gap: 0.75rem !important;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)) !important;
+  }
+}
+
+// Full-width bands without `100vw` (avoids scrollbar gutter overflow)
+.rc-home-hero-bleed,
+.rc-category-strip-bleed {
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+  margin-left: 0;
+  margin-right: 0;
+  left: auto;
+  right: auto;
+}
+
+.rc-home-top {
+  border-bottom: 4px solid $rc-orange;
+}
+
+/*
+ * Dual-brand top strip — composable: `HeaderTopBar`.
+ * SFRA: on `.header-banner` add `rc-header-top-bar` to reuse these rules:
+ *   <div class="header-banner rc-header-top-bar">...</div>
+ */
+.rc-header-top-bar.header-banner,
+.rc-header-top-bar {
+  width: 100%;
+  background: $rc-blue-dark;
+  color: $rc-white;
+  border-bottom: 3px solid $rc-orange;
+  font-size: 0.875rem;
+  line-height: 1.35;
+
+  .rc-header-top-bar__tagline {
+    font-family: $rc-font-heading;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 0.8125rem;
+    color: rgba($rc-white, 0.98);
+  }
+
+  .rc-header-top-bar__switcher {
+    gap: 0.35rem;
+  }
+
+  .rc-header-top-bar__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.4rem 0.85rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: $rc-white !important;
+    border-radius: 6px;
+    text-decoration: none !important;
+    transition:
+      background 0.15s ease,
+      box-shadow 0.15s ease;
+
+    &:hover {
+      background: rgba($rc-white, 0.12);
+      color: $rc-white !important;
+    }
+
+    &--current {
+      background: rgba($rc-white, 0.18);
+      box-shadow: inset 0 0 0 1px rgba($rc-white, 0.35);
+    }
+
+    &--disabled {
+      opacity: 0.55;
+      cursor: default;
+      pointer-events: none;
+      font-weight: 600;
+    }
+  }
+}
+
+// Header search — UI only (behavior unchanged)
+.rc-header-search {
+  @media (min-width: 1199.98px) {
+    width: 90% !important;
+    margin-right: 0 !important;
+  }
+
+  @media (max-width: 1199px) {
+    width: 100% !important;
+  }
+
+
+  input#search-input,
+  input[type='search'] {
+    min-height: 44px !important;
+    border-radius: 999px !important;
+    border: 1px solid $rc-gray-200 !important;
+    background: $rc-gray-100 !important;
+    box-shadow: inset 0 1px 2px rgba($rc-gray-900, 0.04);
+    font-size: 0.9375rem !important;
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease,
+      background 0.15s ease;
+
+    &::placeholder {
+      color: $rc-gray-500;
+    }
+
+    &:hover {
+      background: $rc-white !important;
+      border-color: $rc-gray-300 !important;
+    }
+
+    &:focus-visible {
+      border-color: $rc-blue !important;
+      box-shadow: 0 0 0 3px rgba($rc-blue, 0.22) !important;
+      background: $rc-white !important;
+      outline: none !important;
+    }
+  }
+}
+
+// --- Overlay hero: image fills banner; copy sits on top ---
+.rc-hero.rc-hero--overlay {
+  margin-bottom: 0;
+
+  .rc-hero__banner {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #ffa14d;
+    text-shadow: 0 1px 2px rgba($rc-gray-900, 0.35);
+  }
+
+  .rc-hero__title,
+  h1 {
+    font-family: $rc-font-heading;
+    color: $rc-white;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 12px rgba($rc-gray-900, 0.45);
+  }
+
+  .rc-hero__subtitle-wrap {
+    pointer-events: auto;
+  }
+
+  .rc-hero__bridge-intro {
+    font-size: clamp(1rem, 0.35vw + 0.88rem, 1.15rem);
+    line-height: 1.45;
+    font-weight: 700;
+    color: $rc-white;
+    text-shadow:
+      0 1px 2px rgba($rc-gray-900, 0.85),
+      0 2px 16px rgba($rc-gray-900, 0.55);
+    letter-spacing: 0.01em;
+  }
+
+  .rc-hero__subtitle {
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: rgba($rc-white, 0.96);
+    text-shadow: 0 1px 8px rgba($rc-gray-900, 0.55);
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .rc-hero__cta {
+    font-family: $rc-font-heading !important;
+    font-size: clamp(0.9375rem, 0.22vw + 0.86rem, 1.0625rem) !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.03em !important;
+    line-height: 1.35 !important;
+    text-transform: none !important;
+    padding-inline: 1.85rem !important;
+    padding-block: 0.8rem !important;
+    border-radius: 8px !important;
+    background-color: $rc-orange !important;
+    color: $rc-white !important;
+    border: none !important;
+    box-shadow:
+      0 2px 4px rgba($rc-gray-900, 0.12),
+      0 8px 24px rgba($rc-gray-900, 0.22);
+
+    &:hover {
+      background-color: $rc-orange-hover !important;
+      box-shadow:
+        0 3px 6px rgba($rc-gray-900, 0.14),
+        0 10px 28px rgba($rc-gray-900, 0.26);
+    }
+  }
+
+  .rc-hero__cta--sfra {
+    font-weight: 600 !important;
+    letter-spacing: 0.04em !important;
+    box-shadow:
+      0 2px 6px rgba($rc-gray-900, 0.18),
+      0 10px 32px rgba($rc-blue-dark, 0.35);
+  }
+}
+
+// --- Category tile strip (static homepage band; full-width grey band) ---
+.rc-category-strip {
+  background: $rc-gray-100;
+  padding: 0 1rem 1.75rem;
+
+  @media (min-width: 768px) {
+    padding: 0 1.5rem 2rem;
+  }
+
+  &__heading {
+    font-family: $rc-font-heading;
+    font-size: 40px;
+    font-weight: 700;
+    color: $rc-blue-dark;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 1.25rem;
+    padding-top: 0;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+  }
+
+  &__tile {
+    display: block;
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    background: $rc-white;
+    border: 1px solid $rc-gray-200;
+    text-decoration: none;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba($rc-blue-dark, 0.12);
+    }
+
+    img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      display: block;
+    }
+
+    span {
+      display: block;
+      padding: 0.65rem 0.5rem;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: $rc-blue-dark;
+      font-family: $rc-font-heading;
+    }
+  }
+}
+
+// --- Shop section heading accents ---
+.rc-shop-section {
+  .chakra-heading {
+    color: $rc-blue-dark;
+  }
+}
+
+// Cart page: header band + SFRA bridge callout (matches brand blue / orange)
+.rc-cart-header {
+  padding: 1.25rem 1.35rem 1.5rem;
+  background: $rc-white;
+  border-radius: 12px;
+  border: 1px solid $rc-gray-200;
+  box-shadow: 0 2px 10px rgba($rc-blue-dark, 0.06);
+  border-top: 4px solid $rc-orange;
+
+  .chakra-heading {
+    color: $rc-blue-dark;
+    font-family: $rc-font-heading;
+    margin-bottom: 0;
+  }
+}
+
+.rc-cart-bridge-callout {
+  padding: 1rem 1.15rem;
+  background: $rc-gray-100;
+  border-radius: 10px;
+  border: 1px solid $rc-gray-200;
+  border-left: 4px solid $rc-orange;
+
+  &__title {
+    font-family: $rc-font-heading;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: $rc-blue-dark;
+    margin: 0 0 0.35rem;
+    line-height: 1.35;
+  }
+
+  &__hint {
+    line-height: 1.45;
+  }
+
+  .chakra-button {
+    font-weight: 600;
+    box-shadow: 0 3px 12px rgba($rc-gray-900, 0.12);
+  }
+}
+
+// Home catalog strip: align with category grid width; hide native scrollbar (scroll still works)
+.rc-home-products {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+
+  [data-testid='product-scroller'] .chakra-stack {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+  }
+}
+
+// Footer: navy brand surface + inverted logo for contrast
+.rc-footer {
+  &__logo {
+    width: auto;
+    max-height: 42px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+  }
+
+  &__tagline {
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.5;
+  }
+}

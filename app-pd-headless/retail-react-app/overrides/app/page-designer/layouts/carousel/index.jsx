@@ -83,6 +83,14 @@ export const Carousel = (props = {}) => {
 
     const components = regions[0]?.components || []
     const itemCount = components.length
+    const isProductCarousel = components.some(
+        (c) =>
+            c?.typeId === 'commerce_assets.productTile' ||
+            c?.typeId === 'commerce_assets.shopTheLook'
+    )
+    const headingText =
+        (typeof textHeadline === 'string' && textHeadline.trim()) ||
+        (isProductCarousel ? 'Shop Products' : null)
 
     // Scroll the container left or right by 100%. Passing no args or `1`
     // scrolls to the right, and passing `-1` scrolls left.
@@ -117,11 +125,17 @@ export const Carousel = (props = {}) => {
     return (
         <Box className={'carousel'} sx={style} position="relative" data-testid="carousel">
             <Stack className={'carousel-container'} data-testid="carousel-container" spacing={6}>
-                {textHeadline && (
-                    <Heading as="h2" fontSize="xl" textAlign="center">
-                        {textHeadline}
+                {headingText ? (
+                    <Heading
+                        as="h2"
+                        fontSize={{base: '2xl', md: '40px'}}
+                        textAlign="center"
+                        color="#004a82"
+                        fontWeight="700"
+                    >
+                        {headingText}
                     </Heading>
-                )}
+                ) : null}
 
                 <Stack
                     ref={scrollRef}

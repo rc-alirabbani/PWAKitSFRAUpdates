@@ -6,12 +6,14 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
+import Helmet from 'react-helmet'
 import {ChakraProvider} from '@salesforce/retail-react-app/app/components/shared/ui'
+import {getAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
 
 // Removes focus for non-keyboard interactions for the whole application
 import 'focus-visible/dist/focus-visible'
 
-import theme from '@salesforce/retail-react-app/app/theme'
+import theme from '../../theme'
 import {MultiSiteProvider, StoreLocatorProvider} from '@salesforce/retail-react-app/app/contexts'
 import {
     resolveSiteFromUrl,
@@ -110,7 +112,13 @@ const AppConfig = ({children, locals = {}}) => {
         >
             <MultiSiteProvider site={locals.site} locale={locals.locale} buildUrl={locals.buildUrl}>
                 <StoreLocatorProvider config={storeLocatorConfig}>
-                    <ChakraProvider theme={theme}>{children}</ChakraProvider>
+                    <ChakraProvider theme={theme}>
+                        <Helmet>
+                            <link rel="stylesheet" href={getAssetUrl('static/css/main.css')} />
+                            <link rel="stylesheet" href={getAssetUrl('static/css/page-designer.css')} />
+                        </Helmet>
+                        {children}
+                    </ChakraProvider>
                 </StoreLocatorProvider>
             </MultiSiteProvider>
             <ReactQueryDevtools />
