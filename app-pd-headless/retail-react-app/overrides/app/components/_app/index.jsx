@@ -37,10 +37,10 @@ import {
 import {CurrencyProvider} from '@salesforce/retail-react-app/app/contexts'
 
 // Local Project Components
-import AboveHeader from '@salesforce/retail-react-app/app/components/_app/partials/above-header'
+import AboveHeader from './partials/above-header'
 import {DrawerMenu} from '@salesforce/retail-react-app/app/components/drawer-menu'
-import Footer from '@salesforce/retail-react-app/app/components/footer'
-import Header from '@salesforce/retail-react-app/app/components/header'
+import Footer from '../footer'
+import Header from '../header'
 import Island from '@salesforce/retail-react-app/app/components/island'
 import {ListMenu, ListMenuContent} from '@salesforce/retail-react-app/app/components/list-menu'
 import OfflineBanner from '@salesforce/retail-react-app/app/components/offline-banner'
@@ -113,8 +113,8 @@ import {getPathWithLocale} from '@salesforce/retail-react-app/app/utils/url'
 import {useShopperAgent} from '@salesforce/retail-react-app/app/hooks/use-shopper-agent'
 
 const PlaceholderComponent = () => (
-    <Center p="2">
-        <Spinner size="lg" />
+    <Center p="4" minH="80px">
+        <Spinner size="sm" color="gray.400" thickness="2px" />
     </Center>
 )
 
@@ -334,7 +334,7 @@ const App = (props) => {
         })}`
 
     return (
-        <Box className="sf-app" {...styles.container}>
+        <Box className="sf-app rc-theme-hook" {...styles.container}>
             <StorefrontPreview getToken={getTokenWhenReady} getBasePath={getRouterBasePath}>
                 <IntlProvider
                     onError={(err) => {

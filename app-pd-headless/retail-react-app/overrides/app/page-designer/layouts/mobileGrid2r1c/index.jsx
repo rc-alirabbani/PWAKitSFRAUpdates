@@ -2,7 +2,6 @@
  * Copyright (c) 2023, Salesforce, Inc.
  * All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause
- * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 /* eslint-disable react/prop-types -- optional PD layout props */
 import React from 'react'
@@ -15,27 +14,27 @@ import {
 } from '@salesforce/commerce-sdk-react/page-designer'
 
 /**
- * This layout component displays its children in a 2 row x 1 column grid on mobile
- * and a 1 row x 2 column grid on desktop.
- *
- * @param {componentProps} props
- * @param {regionType []} props.regions - The page designer regions for this component.
- * @param {object} props.data - The data for the component.
- * @param {string} props.typeId - A mapping of typeId's to react components representing the type.
- * @returns {React.ReactElement} - Grid component.
+ * 2 row × 1 col on mobile, 1 row × 2 col on desktop (text + image split sections).
  */
 export const MobileGrid2r1c = ({regions, component, sectionClassCol2}) => (
-    <Box className={`section-wrapper ${sectionClassCol2 ? sectionClassCol2 : ''}`}>
+    <Box
+        className={`section-wrapper pd-split-section ${sectionClassCol2 || ''}`}
+        w="100%"
+        py={{base: 10, md: 14, lg: 16}}
+        px={{base: 4, md: 6, lg: 8}}
+        bg="white"
+    >
         <Box className="section-container" w="100%" mx="auto" maxW="1200px">
             <SimpleGrid
                 className="mobile-2r-1c"
-                columns={2}
-                gridTemplateColumns={{base: '1fr', sm: '1fr 1fr'}}
-                gap={'30px'}
-                alignItems={'center'}
+                columns={{base: 1, md: 2}}
+                spacing={{base: 8, md: 10, lg: 12}}
+                alignItems="center"
             >
                 {regions.map((region) => (
-                    <Region key={region.id} component={component} regionId={region.id} />
+                    <Box key={region.id} className="pd-split-section__cell" minW={0}>
+                        <Region component={component} regionId={region.id} />
+                    </Box>
                 ))}
             </SimpleGrid>
         </Box>
@@ -46,7 +45,8 @@ MobileGrid2r1c.displayName = 'MobileGrid2r1c'
 
 MobileGrid2r1c.propTypes = {
     component: componentPropType.isRequired,
-    regions: PropTypes.arrayOf(regionPropType).isRequired
+    regions: PropTypes.arrayOf(regionPropType).isRequired,
+    sectionClassCol2: PropTypes.string
 }
 
 export default MobileGrid2r1c

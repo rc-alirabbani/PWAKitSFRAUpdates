@@ -7,26 +7,34 @@
 import {registry} from '@salesforce/commerce-sdk-react/page-designer'
 
 /**
- * Register Page Designer component importers. Base template registry omits common headless assets
- * (image tile, editorial rich text, carousel); without these, getPage JSON renders empty regions.
- *
- * Type IDs: `{namespace}.{componentId}` — must match Shopper Experience `component.typeId` from BM.
+ * Register Page Designer component importers.
+ * Type IDs must match Shopper Experience `component.typeId` from BM (`{group}.{componentId}`).
  */
 export function initializeRegistry() {
+    // --- Commerce assets ---
     registry.registerImporter('commerce_assets.imageAndText', () =>
-        import('@salesforce/retail-react-app/app/page-designer/assets/image-with-text')
+        import('./assets/image-with-text')
     )
-    registry.registerImporter('commerce_assets.productTile', () =>
-        import('@salesforce/retail-react-app/app/page-designer/assets/image-with-text')
-    )
-
     registry.registerImporter('commerce_assets.imageTile', () => import('./assets/image-tile'))
     registry.registerImporter('commerce_assets.photoTile', () => import('./assets/image-tile'))
-
     registry.registerImporter('commerce_assets.editorialRichText', () =>
         import('./assets/editorial-rich-text')
     )
+    registry.registerImporter('commerce_assets.productTile', () => import('./assets/product-tile'))
+    registry.registerImporter('commerce_assets.mainBanner', () => import('./assets/main-banner'))
+    registry.registerImporter('commerce_assets.campaignBanner', () =>
+        import('./assets/campaign-banner')
+    )
+    registry.registerImporter('commerce_assets.category', () => import('./assets/category'))
+    registry.registerImporter('commerce_assets.popularCategory', () =>
+        import('./assets/popular-category')
+    )
+    registry.registerImporter('commerce_assets.shopTheLook', () => import('./assets/shop-the-look'))
+    registry.registerImporter('commerce_assets.productListTile', () =>
+        import('./assets/product-list-tile')
+    )
 
+    // --- Commerce layouts ---
     registry.registerImporter('commerce_layouts.mobileGrid1r1c', () =>
         import('./layouts/mobileGrid1r1c')
     )
@@ -48,6 +56,29 @@ export function initializeRegistry() {
     registry.registerImporter('commerce_layouts.mobileGrid3r2c1', () =>
         import('./layouts/mobileGrid3r2c1')
     )
-
     registry.registerImporter('commerce_layouts.carousel', () => import('./layouts/carousel'))
+    registry.registerImporter('commerce_layouts.popularCategories', () =>
+        import('./layouts/popularCategories')
+    )
+    registry.registerImporter('commerce_layouts.mobileGridLookBook', () =>
+        import('./layouts/mobileGridLookBook')
+    )
+
+    // --- Dynamic ---
+    registry.registerImporter('dynamic.productDetail', () => import('./dynamic/product-detail'))
+    registry.registerImporter('dynamic.productList', () => import('./dynamic/product-list'))
+    registry.registerImporter('dynamic.dynamicCategoryBanner', () =>
+        import('./dynamic/dynamic-category-banner')
+    )
+
+    // --- Einstein ---
+    registry.registerImporter('einstein.einsteinCarousel', () =>
+        import('./einstein/einstein-carousel')
+    )
+    registry.registerImporter('einstein.einsteinCarouselCategory', () =>
+        import('./einstein/einstein-carousel')
+    )
+    registry.registerImporter('einstein.einsteinCarouselProduct', () =>
+        import('./einstein/einstein-carousel')
+    )
 }

@@ -164,6 +164,10 @@ module.exports = {
         // Google Cloud api config
         googleCloudAPI: {
             apiKey: process.env.GOOGLE_CLOUD_API_KEY
+        },
+        // Dual-brand strip disabled for this storefront demo.
+        dualBrandTopBar: {
+            enabled: false
         }
     },
     // This list contains server-side only libraries that you don't want to be compiled by webpack
@@ -180,6 +184,8 @@ module.exports = {
     ssrShared: [
         'static/ico/favicon.ico',
         'static/robots.txt',
+        'static/css/*.*',
+        'static/images/*.*',
         '**/*.js',
         '**/*.js.map',
         '**/*.json'
